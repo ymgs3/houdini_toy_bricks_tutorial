@@ -1,0 +1,19 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "pythonPath": "C:/Program Files/Side Effects Software/Houdini 18.5.351/python27/python2.7.exe",
+            "env": {
+               "PYTHONPATH": "C:/Program Files/Side Effects Software/Houdini 18.5.351/houdini/python2.7libs/;C:/Program Files/Side Effects Software/Houdini 18.5.351/python27/lib/"
+            }
+        },
+    ]
+}
