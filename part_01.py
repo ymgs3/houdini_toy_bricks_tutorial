@@ -5,9 +5,11 @@ if not 'HFS' in os.environ:
     try:
         import hrpyc
         connection, hou = hrpyc.import_remote_module()
+        toolutils = connection.modules["toolutils"]
     except:
         # 最後に定義されているhouのautocompleteが効くみたいなので例外側でインポート　
         import hou
+        import toolutils
 
 import math
 
@@ -69,14 +71,14 @@ for parm in edit.allParms():
     print(parm.name())
 
 # タブの切り替え
+edit.parmTuple('s').set((1.5,1,1.5))
 edit.parm("modeswitcher1").set(1)
 edit.parm("group").set(polyextrude.parm("frontgrp").eval())
 edit.parm("fd").set(0)
 edit.parm("flood").pressButton()
 # タブの切り替え
 edit.parm("modeswitcher1").set(0)
-edit.parmTuple('s').set((1.5,1,1.5))
-#edit.parm("apply").pressButton()
+edit.parm("apply").pressButton()
 
 # 05
 polyextrude2 = geo.createNode('polyextrude')
@@ -101,6 +103,44 @@ polyextrude4.parm("group").set(polyextrude3.parm("frontgrp").eval())
 polyextrude4.parm("dist").set(-0.175)
 polyextrude4.setInput(0,polyextrude3)
 polyextrude4.setDisplayFlag(True)
+
+# 07
+groupcreate = geo.createNode('groupcreate')
+groupcreate.setParms(
+    {
+        "groupname":"bevel_edges",
+        "grouptype":2,
+        "groupbase":False,
+        "groupedges":True,
+        "dominedgeangle":True,
+        "domaxedgeangle":True,
+        "minedgeangle":89,
+        "maxedgeangle":91,
+    }
+)
+groupcreate.setInput(0,polyextrude4)
+
+# 08
+polybevel = geo.createNode('polybevel')
+polybevel.setParms(
+    {
+        "group":"bevel_edges",
+        "grouptype":2,
+        "offset":0.006,
+        "filletshape":4,
+        "divisions":3,
+    }
+)
+polybevel.setInput(0,groupcreate)
+polybevel.setDisplayFlag(True)
+
+# 09
+settings = toolutils.sceneViewer().curViewport().settings()
+# オブジェクト用のGeometryViewportDisplaySetを取得します。
+tmplset = settings.displaySet(hou.displaySetType.SelectedObject)
+# このサブセットのシェーディングモードをワイヤーフレーム表示にするようにHoudiniに伝えます。
+tmplset.setShadedMode(hou.glShadingType.Smooth)
+
 
 # 全ノードをいい位置に移動
 for node in hou.node("/").allSubChildren():
