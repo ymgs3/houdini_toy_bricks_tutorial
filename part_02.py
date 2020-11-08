@@ -93,6 +93,7 @@ for node in hou.node("/").allSubChildren():
     node.moveToGoodPosition()
 
 network_box.fitAroundContents()
+network_box.setMinimized(True)
 
 # 保存
 hou.hipFile.save("bricks_02.hip")
